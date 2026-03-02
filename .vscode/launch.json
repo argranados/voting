@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-VotingApplication<voting>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ciberaccion.voting.VotingApplication",
+            "projectName": "voting",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

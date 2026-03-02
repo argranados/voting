@@ -1,3 +1,5 @@
 Paso 1 — Base de datos local (Docker)
 docker compose up -d
 docker ps
+
+Por qué así: ddl-auto=validate hace que Flyway cree tablas y JPA solo valide que coincidan.
