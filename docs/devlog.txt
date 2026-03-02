@@ -8,6 +8,10 @@ V1__init.sql
 Dos guiones bajos después de la versión.
 
 http://localhost:8080/actuator/health
+./mvnw spring-boot:run
 
 Paso 5 — Convertir tus clases a @Entity (sin relaciones aún)
-
+Paso 6 — Crear los Repositories
+2026-03-01T20:54:44.018-06:00  INFO 7864 --- [voting] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : 
+Finished Spring Data repository scanning in 38 ms. Found 5 JPA repository interfaces.
+Paso 7 — Implementar “Votar” (servicio + endpoint)
