@@ -8,3 +8,6 @@ V1__init.sql
 Dos guiones bajos después de la versión.
 
 http://localhost:8080/actuator/health
+
+Paso 5 — Convertir tus clases a @Entity (sin relaciones aún)
+
