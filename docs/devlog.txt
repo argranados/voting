@@ -3,3 +3,8 @@ docker compose up -d
 docker ps
 
 Por qué así: ddl-auto=validate hace que Flyway cree tablas y JPA solo valide que coincidan.
+
+V1__init.sql
+Dos guiones bajos después de la versión.
+
+http://localhost:8080/actuator/health
