@@ -16,3 +16,19 @@ Paso 6 — Crear los Repositories
 Finished Spring Data repository scanning in 38 ms. Found 5 JPA repository interfaces.
 Paso 7 — Implementar “Votar” (servicio + endpoint)
 Paso 8 — Endpoint público POST /api/v1/public/votes
+Paso 9 — Probar (insertar datos sql)
+
+docker exec -it voting_db psql -U voting -d voting
+insert into season (name, status)
+values ('Temporada 1', 'ACTIVE')
+returning id;
+
+insert into contestant (season_id, name, status)
+values
+  (1, 'Famoso A', 'ACTIVE'),
+  (1, 'Famoso B', 'ACTIVE'),
+  (1, 'Famoso C', 'ACTIVE')
+returning id, name;
+
+Paso 10 — Endpoint /api/v1/admin/rounds/{id}/results
+Paso 11: cerrar ronda (OPEN → CLOSED) y bloquear votos para completar el flujo de la semana.
