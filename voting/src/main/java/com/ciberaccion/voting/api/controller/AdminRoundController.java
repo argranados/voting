@@ -3,6 +3,9 @@ package com.ciberaccion.voting.api.controller;
 import com.ciberaccion.voting.domain.Round;
 import com.ciberaccion.voting.service.RoundService;
 import org.springframework.web.bind.annotation.*;
+import com.ciberaccion.voting.api.dto.CreateRoundRequest;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
@@ -26,5 +29,11 @@ public class AdminRoundController {
     public Map<String, Object> close(@PathVariable Long roundId) {
         Round round = roundService.closeRound(roundId);
         return Map.of("roundId", round.getId(), "status", round.getStatus().name());
+    }
+
+    @PostMapping("/rounds")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Round createRound(@Valid @RequestBody CreateRoundRequest request) {
+        return roundService.createRound(request);
     }
 }

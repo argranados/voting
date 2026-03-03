@@ -8,5 +8,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoundRepository extends JpaRepository<Round, Long> {
-    Optional<Round> findFirstByStatusOrderByIdDesc(RoundStatus status); 
+    
+    Optional<Round> findFirstByStatusOrderByIdDesc(RoundStatus status);
+
+    Optional<Round> findBySeasonIdAndStatus(Long seasonId, RoundStatus status);
 }
