@@ -16,6 +16,7 @@ Paso 6 — Crear los Repositories
 Finished Spring Data repository scanning in 38 ms. Found 5 JPA repository interfaces.
 Paso 7 — Implementar “Votar” (servicio + endpoint)
 Paso 8 — Endpoint público POST /api/v1/public/votes
+    POST http://localhost:8080/api/v1/public/votes
 Paso 9 — Probar (insertar datos sql)
 
 docker exec -it voting_db psql -U voting -d voting
@@ -31,4 +32,43 @@ values
 returning id, name;
 
 Paso 10 — Endpoint /api/v1/admin/rounds/{id}/results
+    GET http://localhost:8080/api/v1/admin/rounds/1/results
 Paso 11: cerrar ronda (OPEN → CLOSED) y bloquear votos para completar el flujo de la semana.
+    POST http://localhost:8080/api/v1/admin/rounds/1/close
+Paso 12 — (Mini mejora) Validaciones de estado (recomendado)
+
+Flujo Real de la Ronda
+    create round -> SCHEDULED
+    nominate contestants
+    open voting -> OPEN
+    people vote
+    close voting -> CLOSED
+    calculate results
+
+Paso 12 — GET /public/rounds/current    
+
+Paso 13 — GET /public/rounds/{id}/nominees
+
+insert into round (
+    season_id,
+    name,
+    starts_at,
+    ends_at,
+    status,
+    rule_type
+)
+values (
+    1,
+    'Semana 2',
+    now(),
+    now() + interval '2 days',
+    'SCHEDULED',
+    'ELIMINATE_LOWEST'
+)
+returning id;
+
+Cada vez que crees una ronda nueva, tu checklist manual es:
+insert round (SCHEDULED)
+insert nominations (round_id + contestant_id) ✅
+open round
+votar
