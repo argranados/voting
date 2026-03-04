@@ -77,3 +77,6 @@ Paso 14 — Regla: solo 1 ronda OPEN por season
 Paso 15 — Crear rondas desde API
 http://localhost:8080/api/v1/admin/rounds
 Paso 16 — Nominar participantes desde API
+
+Paso 18 — Agregar ResultsServiceTest (como te prometí)
+Siguiente paso recomendado (portafolio + entrevistas): 1 test de Controller (MockMvc)
