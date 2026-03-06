@@ -80,3 +80,10 @@ Paso 16 — Nominar participantes desde API
 
 Paso 18 — Agregar ResultsServiceTest (como te prometí)
 Siguiente paso recomendado (portafolio + entrevistas): 1 test de Controller (MockMvc)
+
+4-marzo
+1️⃣ DTOs de respuesta (mejor práctica REST)
+2️⃣ Un test HTTP extra para validar el error cuando la ronda está CLOSED.
+5-Marzo
+Siguiente paso: DTO para Nominees (mejora pequeña pero profesional)
+Último paso técnico del MVP: Test HTTP para error cuando la ronda está CLOSED

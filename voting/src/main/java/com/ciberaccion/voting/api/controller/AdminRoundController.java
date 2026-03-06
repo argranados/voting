@@ -8,6 +8,8 @@ import com.ciberaccion.voting.api.dto.CreateRoundRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import com.ciberaccion.voting.api.dto.NominateRequest;
+import com.ciberaccion.voting.api.dto.RoundResponse;
+import com.ciberaccion.voting.api.mapper.RoundMapper;
 import com.ciberaccion.voting.domain.Nomination;
 
 import java.util.List;
@@ -26,21 +28,20 @@ public class AdminRoundController {
     }
 
     @PostMapping("/rounds/{roundId}/open")
-    public Map<String, Object> open(@PathVariable Long roundId) {
-        Round round = roundService.openRound(roundId);
-        return Map.of("roundId", round.getId(), "status", round.getStatus().name());
+    public RoundResponse open(@PathVariable Long roundId) {
+
+        return RoundMapper.toResponse(roundService.openRound(roundId));        
     }
 
     @PostMapping("/rounds/{roundId}/close")
-    public Map<String, Object> close(@PathVariable Long roundId) {
-        Round round = roundService.closeRound(roundId);
-        return Map.of("roundId", round.getId(), "status", round.getStatus().name());
+    public RoundResponse close(@PathVariable Long roundId) {
+        return RoundMapper.toResponse(roundService.closeRound(roundId));
     }
 
     @PostMapping("/rounds")
     @ResponseStatus(HttpStatus.CREATED)
-    public Round createRound(@Valid @RequestBody CreateRoundRequest request) {
-        return roundService.createRound(request);
+    public RoundResponse createRound(@Valid @RequestBody CreateRoundRequest request) {
+        return RoundMapper.toResponse(roundService.createRound(request));
     }
 
     @PostMapping("/rounds/{roundId}/nominees")
