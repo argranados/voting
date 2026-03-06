@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class PublicVotingControllerHttpTest {
@@ -36,10 +37,10 @@ class PublicVotingControllerHttpTest {
 
     @BeforeEach
     void setup() {
-        voteRepository.deleteAll();
-        nominationRepository.deleteAll();
-        roundRepository.deleteAll();
-        contestantRepository.deleteAll();
+    voteRepository.deleteAll();
+    nominationRepository.deleteAll();
+    roundRepository.deleteAll();
+    contestantRepository.deleteAll();
     }
 
     @Test
@@ -77,5 +78,42 @@ class PublicVotingControllerHttpTest {
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(1, voteRepository.count());
+    }
+
+    @Test
+    void postVote_returns400_when_round_closed() {
+
+        // contestant
+        Contestant c = new Contestant();
+        c.setSeasonId(1L);
+        c.setName("Famoso");
+        c.setStatus(ContestantStatus.ACTIVE);
+        c.setCreatedAt(Instant.now());
+        c = contestantRepository.save(c);
+
+        // round CLOSED
+        Round r = new Round();
+        r.setSeasonId(1L);
+        r.setName("Semana Test");
+        r.setStartsAt(Instant.now());
+        r.setEndsAt(Instant.now().plusSeconds(3600));
+        r.setStatus(RoundStatus.CLOSED);
+        r.setRuleType("ELIMINATE_LOWEST");
+        r.setCreatedAt(Instant.now());
+        r = roundRepository.save(r);
+
+        // nomination
+        Nomination n = new Nomination();
+        n.setRoundId(r.getId());
+        n.setContestantId(c.getId());
+        n.setCreatedAt(Instant.now());
+        nominationRepository.save(n);
+
+        var response = restTemplate.postForEntity(                
+                "/api/v1/public/votes",
+                Map.of("roundId", r.getId(), "contestantId", c.getId()),
+                String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }
