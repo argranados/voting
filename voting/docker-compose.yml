@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16
+    container_name: voting_db
+    environment:
+      POSTGRES_DB: voting
+      POSTGRES_USER: voting
+      POSTGRES_PASSWORD: voting
+    ports:
+      - "5432:5432"
+    volumes:
+      - voting_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voting -d voting"]
+      interval: 5s
+      timeout: 5s
+      retries: 10  
+
+  voting-service:
+    build: .
+    container_name: voting-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/voting
+      SPRING_DATASOURCE_USERNAME: voting
+      SPRING_DATASOURCE_PASSWORD: voting
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_FLYWAY_ENABLED: "true"
+    ports:
+      - "8080:8080"
+
+volumes:
+  voting_postgres_data:  
