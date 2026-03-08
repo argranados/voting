@@ -87,3 +87,48 @@ Siguiente paso recomendado (portafolio + entrevistas): 1 test de Controller (Moc
 5-Marzo
 Siguiente paso: DTO para Nominees (mejora pequeña pero profesional)
 Último paso técnico del MVP: Test HTTP para error cuando la ronda está CLOSED
+add test for controller
+Paso 1 (siguiente): Dockerizar el proyecto
+
+docker compose down -v
+docker compose up --build
+
+docker exec -it voting_db psql -U voting -d voting
+psql -U voting -d voting -f dev_seed.sql
+
+6-marzo //Run k6 Test
+docker exec -it voting_db psql -U voting -d voting
+// insertar datos
+voting=# -- Limpiar tablas respetando dependencias
+TRUNCATE TABLE vote CASCADE;
+TRUNCATE TABLE nomination CASCADE;
+TRUNCATE TABLE round CASCADE;
+TRUNCATE TABLE contestant CASCADE;
+TRUNCATE TABLE season CASCADE;
+
+-- Insertar datos de prueba
+INSERT INTO season (id, name, status, created_at)
+VALUES (1, 'Season 1', 'ACTIVE', now());
+
+INSERT INTO contestant (id, season_id, name, status, created_at)
+VALUES
+    (1, 1, 'Contestant A', 'ACTIVE', now()),
+    (2, 1, 'Contestant B', 'ACTIVE', now());
+
+-- Validar datos insertados
+SELECT * FROM season;
+SELECT * FROM contestant;
+
+voting=# \q
+
+//run script
+Poncho@DESKTOP-FR57KQ4 MINGW64 /d/Documentos/repo/voting/voting (main)
+$ ./script/runTest.sh
+
+7-Marzo
+Deploy options
+1. EC2 + Docker Compose
+2. AWS App Runner
+3. ECS con Fargate
+4. Elastic Beanstalk
+5. EKS (Kubernetes)
