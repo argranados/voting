@@ -132,3 +132,6 @@ Deploy options
 3. ECS con Fargate
 4. Elastic Beanstalk
 5. EKS (Kubernetes)
+
+haremos las primeras tres,
+
