@@ -163,3 +163,11 @@ docker compose up -d
 docker compose up --build -d
 
 ssh -i /root/.ssh/ec2-keypar.pem ec2-user@3.141.244.116
+
+11-Marzo Ejecutar Test k6
+docker exec -i voting_db psql -U voting -d voting < script/db/cleanup_test_db.sql
+docker exec -i voting_db psql -U voting -d voting < script/db/setup_test_db.sql
+$ ./script/runTest.sh
+
+add season and contestant controller
+
