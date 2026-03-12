@@ -32,5 +32,17 @@ services:
     ports:
       - "8080:8080"
 
+# Agrega este bloque a tu docker-compose.yml existente
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: voting-frontend
+    depends_on:
+      - voting-service
+    ports:
+      - "3000:80"
+
 volumes:
   voting_postgres_data:  

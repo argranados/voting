@@ -134,4 +134,32 @@ Deploy options
 5. EKS (Kubernetes)
 
 haremos las primeras tres,
+1. EC2 + Docker Compose:
+----------------------------------------------
+1️⃣ checkout del repo
+2️⃣ configuración de SSH
+3️⃣ conexión a EC2
+4️⃣ git pull
+5️⃣ docker compose up --build -d
+6️⃣ deploy del servicio
 
+git push
+      ↓
+GitHub Actions
+      ↓
+SSH
+      ↓
+EC2
+      ↓
+docker compose up --build
+      ↓
+Aplicación desplegada
+Eso ya es un CI/CD func 
+
+9-Marzo
+cd /home/ec2-user/voting/voting
+docker ps
+docker compose up -d
+docker compose up --build -d
+
+ssh -i /root/.ssh/ec2-keypar.pem ec2-user@3.141.244.116

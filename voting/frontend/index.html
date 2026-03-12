@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Voting App</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/styles.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container">
+      <span class="navbar-brand mb-0 h1">Voting App</span>
+      <span class="badge text-bg-secondary" id="healthBadge">Backend: verificando...</span>
+    </div>
+  </nav>
+
+  <main class="container pb-5">
+    <div id="alertBox" class="alert d-none" role="alert"></div>
+
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#public-pane" type="button">Público</button></li>
+      <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#admin-pane" type="button">Admin</button></li>
+    </ul>
+
+    <div class="tab-content">
+      <section class="tab-pane fade show active" id="public-pane">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h2 class="h4 mb-1">Ronda actual</h2>
+                    <p class="text-muted mb-0">Consulta la ronda abierta y sus nominados.</p>
+                  </div>
+                  <button class="btn btn-outline-primary btn-sm" id="refreshPublicBtn">Actualizar</button>
+                </div>
+                <div id="currentRoundState" class="text-muted">Cargando ronda actual...</div>
+                <div class="mt-4">
+                  <h3 class="h5">Nominados</h3>
+                  <div id="nomineesList" class="row g-3"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Votar</h2>
+                <form id="voteForm" class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label" for="voteRoundId">Round ID</label>
+                    <input class="form-control" id="voteRoundId" type="number" required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label" for="voteContestantId">Contestant ID</label>
+                    <input class="form-control" id="voteContestantId" type="number" required>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-success" type="submit">Enviar voto</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Resultados</h2>
+                <form id="resultsForm" class="row g-3 mb-3">
+                  <div class="col-12">
+                    <label class="form-label" for="resultsRoundId">Round ID</label>
+                    <input class="form-control" id="resultsRoundId" type="number" required>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-primary" type="submit">Ver resultados</button>
+                  </div>
+                </form>
+                <div id="resultsState" class="text-muted">Sin resultados cargados.</div>
+                <div id="resultsList" class="list-group mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-pane fade" id="admin-pane">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Crear round</h2>
+                <form id="createRoundForm" class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label" for="seasonId">Season ID</label>
+                    <input class="form-control" id="seasonId" type="number" value="1" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="ruleType">Rule Type</label>
+                    <input class="form-control" id="ruleType" type="text" value="ELIMINATE_LOWEST" required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label" for="roundName">Name</label>
+                    <input class="form-control" id="roundName" type="text" placeholder="Semana 1" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="startsAt">Starts At</label>
+                    <input class="form-control" id="startsAt" type="datetime-local" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label" for="endsAt">Ends At</label>
+                    <input class="form-control" id="endsAt" type="datetime-local" required>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-primary" type="submit">Crear round</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Nominar contestants</h2>
+                <form id="nominateForm" class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label" for="nominateRoundId">Round ID</label>
+                    <input class="form-control" id="nominateRoundId" type="number" required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label" for="contestantIds">Contestant IDs (coma separados)</label>
+                    <input class="form-control" id="contestantIds" type="text" placeholder="1,2" required>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-warning" type="submit">Nominar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h2 class="h4 mb-3">Abrir / cerrar round</h2>
+                <form class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label" for="actionRoundId">Round ID</label>
+                    <input class="form-control" id="actionRoundId" type="number" required>
+                  </div>
+                  <div class="col-12 d-flex gap-2">
+                    <button class="btn btn-success" type="button" id="openRoundBtn">Open</button>
+                    <button class="btn btn-danger" type="button" id="closeRoundBtn">Close</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
