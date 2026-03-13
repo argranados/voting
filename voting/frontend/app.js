@@ -5,6 +5,8 @@ const currentRoundState = document.getElementById('currentRoundState');
 const nomineesList = document.getElementById('nomineesList');
 const resultsState = document.getElementById('resultsState');
 const resultsList = document.getElementById('resultsList');
+const seasonList = document.getElementById('seasonList');
+const contestantList = document.getElementById('contestantList');
 
 function showAlert(message, type='success'){alertBox.className=`alert alert-${type}`;alertBox.textContent=message;alertBox.classList.remove('d-none');window.scrollTo({top:0,behavior:'smooth'});}
 function hideAlert(){alertBox.classList.add('d-none');}
@@ -120,4 +122,115 @@ document.getElementById('openRoundBtn').addEventListener('click', async ()=>{ tr
 document.getElementById('closeRoundBtn').addEventListener('click', async ()=>{ try{ hideAlert(); await closeRound(Number(actionRoundId.value)); await loadCurrentRound(); } catch(error){ showAlert(error.message, 'danger'); } });
 
 (function initDefaultDates(){ const now = new Date(); const plusOneHour = new Date(now.getTime()+3600000); const plusOneDay = new Date(now.getTime()+86400000); startsAt.value = plusOneHour.toISOString().slice(0,16); endsAt.value = plusOneDay.toISOString().slice(0,16); })();
-(async function init(){ await loadHealth(); await loadCurrentRound(); })();
+
+function renderSeasons(seasons) {
+  seasonList.innerHTML = '';
+
+  if (!seasons.length) {
+    seasonList.innerHTML = '<div class="text-muted">No hay seasons.</div>';
+    return;
+  }
+
+  seasons.forEach((season) => {
+    const row = document.createElement('div');
+    row.className = 'list-group-item d-flex justify-content-between align-items-center';
+    row.innerHTML = `
+      <div>
+        <div class="fw-semibold">${season.name}</div>
+        <div class="small-label">ID: ${season.id}</div>
+      </div>
+      <span class="badge text-bg-secondary">${season.status}</span>
+    `;
+    seasonList.appendChild(row);
+  });
+}
+
+function renderContestants(contestants) {
+  contestantList.innerHTML = '';
+
+  if (!contestants.length) {
+    contestantList.innerHTML = '<div class="text-muted">No hay contestants.</div>';
+    return;
+  }
+
+  contestants.forEach((contestant) => {
+    const row = document.createElement('div');
+    row.className = 'list-group-item d-flex justify-content-between align-items-center';
+    row.innerHTML = `
+      <div>
+        <div class="fw-semibold">${contestant.name}</div>
+        <div class="small-label">ID: ${contestant.id} · Season ID: ${contestant.seasonId}</div>
+      </div>
+      <span class="badge text-bg-secondary">${contestant.status}</span>
+    `;
+    contestantList.appendChild(row);
+  });
+}
+
+async function loadSeasons() {
+  const seasons = await apiFetch('/api/v1/admin/seasons');
+  renderSeasons(seasons);
+}
+
+async function loadContestants() {
+  const contestants = await apiFetch('/api/v1/admin/contestants');
+  renderContestants(contestants);
+}
+
+async function createSeason(name) {
+  const season = await apiFetch('/api/v1/admin/seasons', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
+  });
+
+  showAlert(`Season creada con ID ${season.id}.`, 'success');
+  return season;
+}
+
+async function createContestant(seasonId, name) {
+  const contestant = await apiFetch('/api/v1/admin/contestants', {
+    method: 'POST',
+    body: JSON.stringify({ seasonId, name }),
+  });
+
+  showAlert(`Contestant creado con ID ${contestant.id}.`, 'success');
+  return contestant;
+}
+
+
+document.getElementById('createSeasonForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    hideAlert();
+    const name = document.getElementById('seasonName').value;
+    const season = await createSeason(name);
+
+    document.getElementById('seasonId').value = season.id;
+    document.getElementById('contestantSeasonId').value = season.id;
+
+    await loadSeasons();
+  } catch (error) {
+    showAlert(error.message, 'danger');
+  }
+});
+
+document.getElementById('createContestantForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    hideAlert();
+    const seasonId = Number(document.getElementById('contestantSeasonId').value);
+    const name = document.getElementById('contestantName').value;
+
+    await createContestant(seasonId, name);
+    await loadContestants();
+  } catch (error) {
+    showAlert(error.message, 'danger');
+  }
+});
+
+(async function init(){ 
+  await loadHealth(); 
+  await loadCurrentRound();   
+  await loadSeasons();
+  await loadContestants();
+})();
