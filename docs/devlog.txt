@@ -169,5 +169,34 @@ docker exec -i voting_db psql -U voting -d voting < script/db/cleanup_test_db.sq
 docker exec -i voting_db psql -U voting -d voting < script/db/setup_test_db.sql
 $ ./script/runTest.sh
 
+12-marzo
 add season and contestant controller
+1️⃣ integrar estos endpoints en el frontend
+Reconstruir FrontEnd
+docker compose up --build -d frontend
 
+front: http://localhost:3000/
+
+ver logs 
+$ docker logs -f 349b8dd6bc1b
+$ docker logs voting-service
+
+Probar Front
+Parece que se estan repitiendo los votos
+voting=# select id, round_id, contestant_id, status, created_at from vote where round_id = 6 order by id;
+ id | round_id | contestant_id |  status  |          created_at
+----+----------+---------------+----------+-------------------------------
+ 16 |        6 |             1 | ACCEPTED | 2026-03-12 23:26:01.870727+00
+ 17 |        6 |             1 | ACCEPTED | 2026-03-12 23:26:06.928249+00
+ 18 |        6 |             3 | ACCEPTED | 2026-03-12 23:26:46.935437+00
+ 19 |        6 |             3 | ACCEPTED | 2026-03-12 23:26:48.389896+00
+ 20 |        6 |             5 | ACCEPTED | 2026-03-12 23:26:49.774543+00
+ 21 |        6 |             5 | ACCEPTED | 2026-03-12 23:26:51.087981+00
+ 22 |        6 |             1 | ACCEPTED | 2026-03-12 23:26:52.502748+00
+ 23 |        6 |             1 | ACCEPTED | 2026-03-12 23:26:53.683586+0
+
+ Mejoras:
+ 1. Mostrar nombre en vez de ID
+ 2. Deshabilitar botón al votar
+ 4. Agregar estados de contestant para UX
+ 5. Mostrar “Last Season”

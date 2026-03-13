@@ -17,14 +17,17 @@ public class RoundResultsResponse {
 
     public static class ResultItem {
         private Long contestantId;
+        private String contestantName;
         private long votes;
 
-        public ResultItem(Long contestantId, long votes) {
+        public ResultItem(Long contestantId, String contestantName, long votes) {
             this.contestantId = contestantId;
+            this.contestantName = contestantName;
             this.votes = votes;
         }
 
         public Long getContestantId() { return contestantId; }
+        public String getContestantName() { return contestantName; }
         public long getVotes() { return votes; }
     }
 }

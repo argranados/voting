@@ -30,7 +30,8 @@ public class ResultsService {
         List<RoundResultsResponse.ResultItem> items = rows.stream()
                 .map(r -> new RoundResultsResponse.ResultItem(
                         (Long) r[0],
-                        (Long) r[1]   // count() en JPA suele venir como Long
+                        (String) r[1],
+                        (Long) r[2]   // count() en JPA suele venir como Long
                 ))
                 .toList();
 
