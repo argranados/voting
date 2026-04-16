@@ -95,6 +95,9 @@
             <div class="card shadow-sm h-100">
               <div class="card-body">
                 <h2 class="h4 mb-3">Crear season</h2>
+                <div class="mb-3">
+                  <span class="badge text-bg-info" id="lastSeasonBadge">Last Season: --</span>
+                </div>
                 <form id="createSeasonForm" class="row g-3">
                   <div class="col-12">
                     <label class="form-label" for="seasonName">Season name</label>
@@ -183,8 +186,8 @@
                     <input class="form-control" id="nominateRoundId" type="number" required>
                   </div>
                   <div class="col-12">
-                    <label class="form-label" for="contestantIds">Contestant IDs (coma separados)</label>
-                    <input class="form-control" id="contestantIds" type="text" placeholder="1,2" required>
+                    <label class="form-label">Selecciona contestants</label>
+                    <div id="contestantSelector" class="border rounded p-3 bg-body-tertiary"></div>
                   </div>
                   <div class="col-12">
                     <button class="btn btn-warning" type="submit">Nominar</button>

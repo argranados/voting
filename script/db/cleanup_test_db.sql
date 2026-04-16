@@ -5,20 +5,9 @@
 
 BEGIN;
 
--- eliminar votos
-TRUNCATE TABLE vote RESTART IDENTITY CASCADE;
-
--- eliminar nominaciones
-TRUNCATE TABLE nomination RESTART IDENTITY CASCADE;
-
--- eliminar rondas
-TRUNCATE TABLE round RESTART IDENTITY CASCADE;
-
--- eliminar contestants
-TRUNCATE TABLE contestant RESTART IDENTITY CASCADE;
-
--- eliminar seasons
-TRUNCATE TABLE season RESTART IDENTITY CASCADE;
+-- eliminar datos
+TRUNCATE TABLE vote, nomination, round, contestant, season
+RESTART IDENTITY CASCADE;
 
 COMMIT;
 

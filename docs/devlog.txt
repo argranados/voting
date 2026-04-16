@@ -1,3 +1,11 @@
+HOW TO RUN
+En local solo corre en containers
+docker compose up --buld -d    -> build para reconstruir la imagen
+
+HOW TO TEST
+front: http://localhost:3000/
+
+---------------------------------------------------------------------------------------------
 Paso 1 — Base de datos local (Docker)
 docker compose up -d
 docker ps
