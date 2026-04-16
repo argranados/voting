@@ -208,3 +208,6 @@ voting=# select id, round_id, contestant_id, status, created_at from vote where 
  2. Deshabilitar botón al votar
  4. Agregar estados de contestant para UX
  5. Mostrar “Last Season”
+
+ 16-Abril
+ Cambiar EC2 a Elastic IP, recordar quitarla para no generar costos

@@ -1,5 +1,6 @@
 package com.ciberaccion.voting.service;
 
+import com.ciberaccion.voting.api.dto.NomineeResponse;
 import com.ciberaccion.voting.api.error.BadRequestException;
 import com.ciberaccion.voting.api.error.NotFoundException;
 import com.ciberaccion.voting.domain.Nomination;
@@ -20,8 +21,8 @@ public class NominationService {
     private final NominationRepository nominationRepository;
 
     public NominationService(RoundRepository roundRepository,
-                             ContestantRepository contestantRepository,
-                             NominationRepository nominationRepository) {
+            ContestantRepository contestantRepository,
+            NominationRepository nominationRepository) {
         this.roundRepository = roundRepository;
         this.contestantRepository = contestantRepository;
         this.nominationRepository = nominationRepository;
@@ -62,5 +63,16 @@ public class NominationService {
         }
 
         return created;
+    }
+
+    // Nuevo método: la lógica de obtener nominees sale del controller y viene aquí
+    public List<NomineeResponse> getNominees(Long roundId) {
+        roundRepository.findById(roundId)
+                .orElseThrow(() -> new NotFoundException("Round no existe: " + roundId));
+
+        return nominationRepository.findNomineesByRoundId(roundId)
+                .stream()
+                .map(p -> new NomineeResponse(p.getContestantId(), p.getContestantName()))
+                .toList();
     }
 }

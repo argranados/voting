@@ -25,14 +25,14 @@ public class ResultsService {
         roundRepository.findById(roundId)
                 .orElseThrow(() -> new NotFoundException("Round no existe: " + roundId));
 
-        List<Object[]> rows = voteRepository.countVotesByContestant(roundId);
-
-        List<RoundResultsResponse.ResultItem> items = rows.stream()
-                .map(r -> new RoundResultsResponse.ResultItem(
-                        (Long) r[0],
-                        (String) r[1],
-                        (Long) r[2]   // count() en JPA suele venir como Long
-                ))
+        List<RoundResultsResponse.ResultItem> items = voteRepository
+                .countVotesByContestant(roundId)
+                .stream()
+                // Acceso por nombre en lugar de por índice r[0], r[1], r[2]
+                .map(p -> new RoundResultsResponse.ResultItem(
+                        p.getContestantId(),
+                        p.getContestantName(),
+                        p.getVoteCount()))
                 .toList();
 
         return new RoundResultsResponse(roundId, items);
