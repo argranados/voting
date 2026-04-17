@@ -105,3 +105,34 @@ log.info("Voto registrado: roundId={}, contestantId={}", roundId, contestantId);
 
 Los `{}` son placeholders que SLF4J reemplaza en runtime. Nunca concatenar
 strings en logs porque se evalúa aunque el nivel esté desactivado.
+
+### Cambio 6 — Spring Security + JWT
+
+**Problema:** Todos los endpoints admin eran públicos. Cualquiera con Postman
+podía crear seasons, abrir o cerrar rondas sin ninguna restricción.
+
+**Solución:** Se implementó autenticación stateless con JWT y Spring Security.
+
+**Archivos nuevos:**
+- `JwtService` — genera y valida tokens JWT con firma HMAC-SHA256
+- `JwtAuthFilter` — intercepta cada request, extrae y valida el token del
+  header `Authorization: Bearer <token>`
+- `SecurityConfig` — define qué rutas son públicas y cuáles requieren rol ADMIN
+- `AuthService` — lógica de registro y login con BCrypt para hashear passwords
+- `AuthController` — endpoints `POST /auth/register` y `POST /auth/login`
+- `AppUser` + `UserRepository` — entidad de usuario con rol en base de datos
+- `V2__add_users.sql` — migración Flyway para la tabla `app_user`
+
+**Flujo:**
+1. `POST /auth/register` con username, password y role → regresa token
+2. `POST /auth/login` con credenciales → regresa token
+3. Requests a `/api/v1/admin/**` requieren header `Authorization: Bearer <token>`
+4. `/api/v1/public/**` y `/actuator/health` siguen siendo públicos
+
+**Conceptos clave:**
+- `SessionCreationPolicy.STATELESS` — el servidor no guarda sesión, cada
+  request es independiente y lleva su propio token
+- BCrypt — nunca se guarda el password en texto plano, el hash incluye
+  salt interno resistente a rainbow table attacks
+- El token JWT contiene username y role en el payload, firmado con HMAC-SHA256.
+  El servidor valida la firma sin consultar la base de datos en cada request

@@ -90,108 +90,133 @@
       </section>
 
       <section class="tab-pane fade" id="admin-pane">
-        <div class="row g-4 mb-4">
-          <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
+        <!-- Login form — se oculta cuando hay token -->
+        <div id="loginSection" class="row justify-content-center mb-4">
+          <div class="col-lg-4">
+            <div class="card shadow-sm">
               <div class="card-body">
-                <h2 class="h4 mb-3">Crear season</h2>
+                <h2 class="h4 mb-3">Login Admin</h2>
                 <div class="mb-3">
-                  <span class="badge text-bg-info" id="lastSeasonBadge">Last Season: --</span>
+                  <label class="form-label" for="loginUsername">Usuario</label>
+                  <input class="form-control" id="loginUsername" type="text" placeholder="admin">
                 </div>
-                <form id="createSeasonForm" class="row g-3">
-                  <div class="col-12">
-                    <label class="form-label" for="seasonName">Season name</label>
-                    <input class="form-control" id="seasonName" type="text" placeholder="Season 1" required>
-                  </div>
-                  <div class="col-12">
-                    <button class="btn btn-primary" type="submit">Crear season</button>
-                  </div>
-                </form>
-
-                <hr class="my-4">
-
-                <h3 class="h5 mb-3">Seasons</h3>
-                <div id="seasonList" class="list-group"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-              <div class="card-body">
-                <h2 class="h4 mb-3">Crear contestant</h2>
-                <form id="createContestantForm" class="row g-3">
-                  <div class="col-md-4">
-                    <label class="form-label" for="contestantSeasonId">Season ID</label>
-                    <input class="form-control" id="contestantSeasonId" type="number" required>
-                  </div>
-                  <div class="col-md-8">
-                    <label class="form-label" for="contestantName">Contestant name</label>
-                    <input class="form-control" id="contestantName" type="text" placeholder="Contestant A" required>
-                  </div>
-                  <div class="col-12">
-                    <button class="btn btn-warning" type="submit">Crear contestant</button>
-                  </div>
-                </form>
-
-                <hr class="my-4">
-
-                <h3 class="h5 mb-3">Contestants</h3>
-                <div id="contestantList" class="list-group"></div>
+                <div class="mb-3">
+                  <label class="form-label" for="loginPassword">Contraseña</label>
+                  <input class="form-control" id="loginPassword" type="password">
+                </div>
+                <button class="btn btn-primary w-100" id="loginBtn">Iniciar sesión</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="row g-4">
-          <div class="col-lg-6">
-            <div class="card shadow-sm h-100">
-              <div class="card-body">
-                <h2 class="h4 mb-3">Crear round</h2>
-                <form id="createRoundForm" class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label" for="seasonId">Season ID</label>
-                    <input class="form-control" id="seasonId" type="number" value="1" required>
+
+        <!-- Admin content — se oculta cuando no hay token -->
+        <div id="adminContent" class="d-none">
+          <button class="btn btn-outline-danger btn-sm mb-3" id="logoutBtn">Cerrar sesión</button>
+
+          <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <h2 class="h4 mb-3">Crear season</h2>
+                  <div class="mb-3">
+                    <span class="badge text-bg-info" id="lastSeasonBadge">Last Season: --</span>
                   </div>
-                  <div class="col-md-6">
-                    <label class="form-label" for="ruleType">Rule Type</label>
-                    <input class="form-control" id="ruleType" type="text" value="ELIMINATE_LOWEST" required>
-                  </div>
-                  <div class="col-12">
-                    <label class="form-label" for="roundName">Name</label>
-                    <input class="form-control" id="roundName" type="text" placeholder="Semana 1" required>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label" for="startsAt">Starts At</label>
-                    <input class="form-control" id="startsAt" type="datetime-local" required>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label" for="endsAt">Ends At</label>
-                    <input class="form-control" id="endsAt" type="datetime-local" required>
-                  </div>
-                  <div class="col-12">
-                    <button class="btn btn-primary" type="submit">Crear round</button>
-                  </div>
-                </form>
+                  <form id="createSeasonForm" class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label" for="seasonName">Season name</label>
+                      <input class="form-control" id="seasonName" type="text" placeholder="Season 1" required>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary" type="submit">Crear season</button>
+                    </div>
+                  </form>
+
+                  <hr class="my-4">
+
+                  <h3 class="h5 mb-3">Seasons</h3>
+                  <div id="seasonList" class="list-group"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <h2 class="h4 mb-3">Crear contestant</h2>
+                  <form id="createContestantForm" class="row g-3">
+                    <div class="col-md-4">
+                      <label class="form-label" for="contestantSeasonId">Season ID</label>
+                      <input class="form-control" id="contestantSeasonId" type="number" required>
+                    </div>
+                    <div class="col-md-8">
+                      <label class="form-label" for="contestantName">Contestant name</label>
+                      <input class="form-control" id="contestantName" type="text" placeholder="Contestant A" required>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-warning" type="submit">Crear contestant</button>
+                    </div>
+                  </form>
+
+                  <hr class="my-4">
+
+                  <h3 class="h5 mb-3">Contestants</h3>
+                  <div id="contestantList" class="list-group"></div>
+                </div>
               </div>
             </div>
           </div>
+          <div class="row g-4">
+            <div class="col-lg-6">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <h2 class="h4 mb-3">Crear round</h2>
+                  <form id="createRoundForm" class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label" for="seasonId">Season ID</label>
+                      <input class="form-control" id="seasonId" type="number" value="1" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="ruleType">Rule Type</label>
+                      <input class="form-control" id="ruleType" type="text" value="ELIMINATE_LOWEST" required>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="roundName">Name</label>
+                      <input class="form-control" id="roundName" type="text" placeholder="Semana 1" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="startsAt">Starts At</label>
+                      <input class="form-control" id="startsAt" type="datetime-local" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="endsAt">Ends At</label>
+                      <input class="form-control" id="endsAt" type="datetime-local" required>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary" type="submit">Crear round</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
 
-          <div class="col-lg-6">
-            <div class="card shadow-sm mb-4">
-              <div class="card-body">
-                <h2 class="h4 mb-3">Nominar contestants</h2>
-                <form id="nominateForm" class="row g-3">
-                  <div class="col-12">
-                    <label class="form-label" for="nominateRoundId">Round ID</label>
-                    <input class="form-control" id="nominateRoundId" type="number" required>
-                  </div>
-                  <div class="col-12">
-                    <label class="form-label">Selecciona contestants</label>
-                    <div id="contestantSelector" class="border rounded p-3 bg-body-tertiary"></div>
-                  </div>
-                  <div class="col-12">
-                    <button class="btn btn-warning" type="submit">Nominar</button>
-                  </div>
+            <div class="col-lg-6">
+              <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                  <h2 class="h4 mb-3">Nominar contestants</h2>
+                  <form id="nominateForm" class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label" for="nominateRoundId">Round ID</label>
+                      <input class="form-control" id="nominateRoundId" type="number" required>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="contestantIds">Contestant IDs (coma separados)</label>
+                      <input class="form-control" id="contestantIds" type="text" placeholder="1,2" required>
+                    </div>
+                </div>
+                <div class="col-12">
+                  <button class="btn btn-warning" type="submit">Nominar</button>
+                </div>
                 </form>
               </div>
             </div>
@@ -213,7 +238,8 @@
             </div>
           </div>
         </div>
-      </section>
+    </div> <!-- /adminContent -->
+    </section>
     </div>
   </main>
 
