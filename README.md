@@ -64,3 +64,44 @@ El controller ahora solo recibe el request, llama al service y regresa el respon
 3. Regresar el response
 
 Nunca accede directamente a un repository ni transforma datos.
+
+### Cambio 4 — Manejo de errores consistente
+
+**Problema:** Spring regresaba dos formatos distintos para errores 400. Los errores
+de `@Valid` usaban el formato default de Spring y los errores de negocio usaban
+el formato de `GlobalExceptionHandler`. Un cliente del API no puede manejar
+errores de forma consistente si el formato cambia según el origen del error.
+
+**Solución:**
+- Se creó `ErrorResponse` como record con campos fijos: `timestamp`, `status`,
+  `error`, `message`. Reemplaza el `Map<String, Object>` que no tiene estructura
+  garantizada.
+- Se agregó `handleValidation()` en `GlobalExceptionHandler` que captura
+  `MethodArgumentNotValidException` (errores de `@Valid`) y los convierte al
+  mismo formato que el resto de errores.
+
+**Regla:** Todos los errores del API deben tener el mismo formato sin importar
+su origen. El cliente no debe adivinar qué estructura esperar.
+
+### Cambio 5 — Logs estructurados con SLF4J
+
+**Problema:** Sin logs en los services era imposible debuggear problemas en
+producción. `docker compose logs voting-service` solo mostraba el banner
+de Spring Boot.
+
+**Solución:** Se agregó `Logger` de SLF4J en `VotingService`, `RoundService`
+y `NominationService` siguiendo esta convención de niveles:
+
+- `INFO`  → operaciones exitosas importantes: voto registrado, ronda abierta
+- `WARN`  → algo inesperado pero recuperable: contestant ya nominado, ronda no abierta
+- `ERROR` → fallos que no deberían ocurrir
+- `DEBUG` → detalle útil solo en desarrollo, no en producción
+
+**Patrón usado:**
+```java
+private static final Logger log = LoggerFactory.getLogger(VotingService.class);
+log.info("Voto registrado: roundId={}, contestantId={}", roundId, contestantId);
+```
+
+Los `{}` son placeholders que SLF4J reemplaza en runtime. Nunca concatenar
+strings en logs porque se evalúa aunque el nivel esté desactivado.

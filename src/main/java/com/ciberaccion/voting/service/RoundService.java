@@ -4,6 +4,9 @@ import com.ciberaccion.voting.api.error.NotFoundException;
 import com.ciberaccion.voting.domain.Round;
 import com.ciberaccion.voting.domain.RoundStatus;
 import com.ciberaccion.voting.repo.RoundRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.ciberaccion.voting.api.error.BadRequestException;
 import com.ciberaccion.voting.api.dto.CreateRoundRequest;
@@ -12,6 +15,8 @@ import java.time.Instant;
 
 @Service
 public class RoundService {
+
+    private static final Logger log = LoggerFactory.getLogger(RoundService.class);
 
     private final RoundRepository roundRepository;
 
@@ -34,7 +39,9 @@ public class RoundService {
         round.setRuleType(req.getRuleType());
         round.setCreatedAt(Instant.now());
 
-        return roundRepository.save(round);
+        Round saved = roundRepository.save(round);
+        log.info("Ronda creada: roundId={}, seasonId={}, name={}", saved.getId(), saved.getSeasonId(), saved.getName());
+        return saved;
     }
 
     public Round openRound(Long roundId) {
@@ -52,8 +59,11 @@ public class RoundService {
                     throw new BadRequestException(
                             "Ya existe una ronda OPEN para esta temporada: " + r.getId());
                 });
+
         round.setStatus(RoundStatus.OPEN);
-        return roundRepository.save(round);
+        Round saved = roundRepository.save(round);
+        log.info("Ronda abierta: roundId={}, seasonId={}", saved.getId(), saved.getSeasonId());
+        return saved;
     }
 
     public Round closeRound(Long roundId) {
@@ -68,6 +78,8 @@ public class RoundService {
         }
 
         round.setStatus(RoundStatus.CLOSED);
-        return roundRepository.save(round);
+        Round saved = roundRepository.save(round);
+        log.info("Ronda cerrada: roundId={}, seasonId={}", saved.getId(), saved.getSeasonId());
+        return saved;
     }
 }

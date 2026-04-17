@@ -211,3 +211,6 @@ voting=# select id, round_id, contestant_id, status, created_at from vote where 
 
  16-Abril
  Cambiar EC2 a Elastic IP, recordar quitarla para no generar costos
+
+ssh -i Desktop/keys/voting/voting-key.pem ec2-user@52.55.67.197
+docker compose  logs -f voting-service
