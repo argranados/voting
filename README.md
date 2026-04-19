@@ -136,3 +136,44 @@ podía crear seasons, abrir o cerrar rondas sin ninguna restricción.
   salt interno resistente a rainbow table attacks
 - El token JWT contiene username y role en el payload, firmado con HMAC-SHA256.
   El servidor valida la firma sin consultar la base de datos en cada request
+
+  ### Cambio 7 — HTTPS con Let's Encrypt y Nginx reverse proxy
+
+**Problema:** La app era accesible solo con IP y puertos expuestos directamente:
+`http://52.55.67.197:3000` y `http://52.55.67.197:8080`. Sin HTTPS, sin dominio,
+sin aspecto profesional.
+
+**Solución:**
+1. Dominio gratuito `ciberaccion-voting-app.duckdns.org` apuntando a la Elastic IP
+2. Certificado SSL gratuito de Let's Encrypt obtenido con Certbot
+3. Nginx instalado en EC2 como reverse proxy que:
+   - Redirige HTTP → HTTPS automáticamente
+   - Enruta `/api/` y `/auth/` al backend en `localhost:8080`
+   - Enruta `/` al frontend en `localhost:3000`
+   - Expone solo los puertos 80 y 443 al exterior
+
+**Resultado:**
+- `https://ciberaccion-voting-app.duckdns.org` → frontend
+- `https://ciberaccion-voting-app.duckdns.org/api/` → backend
+- `https://ciberaccion-voting-app.duckdns.org/auth/` → auth
+- Certificado se renueva automáticamente antes de expirar
+
+**Notas:**
+- Certbot expira 2026-07-17 pero tiene renovación automática configurada
+- Nginx corre fuera de Docker directamente en EC2
+- Los puertos 8080 y 3000 pueden cerrarse del Security Group
+  ya que el tráfico ahora entra por 443
+
+ ### Pendiente — Credenciales fuera de docker-compose.yml
+
+**Problema:** Las credenciales de postgres y el JWT secret están hardcodeadas
+en `docker-compose.yml` y `application.properties`, lo cual es un riesgo de
+seguridad si el repo es público.
+
+**Solución recomendada:**
+1. Crear un archivo `.env` en la raíz del proyecto con las credenciales
+2. Agregar `.env` al `.gitignore` para que nunca se suba al repo
+3. Referenciar las variables en `docker-compose.yml` con `${VARIABLE}`
+4. En EC2 crear el `.env` manualmente una sola vez
+
+**Ejemplo `.env`:** 
