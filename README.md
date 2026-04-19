@@ -177,3 +177,18 @@ seguridad si el repo es público.
 4. En EC2 crear el `.env` manualmente una sola vez
 
 **Ejemplo `.env`:** 
+
+Dos Rutas de Acceso
+http://52.55.67.197:3000/ 
+https://ciberaccion-voting-app.duckdns.org/ 
+
+### Cambio 8 — CI/CD con tests antes del deploy
+
+**Problema:** El pipeline desplegaba a EC2 sin verificar que los tests pasaran.
+Un cambio con bugs podía llegar directo a producción.
+
+**Solución:** Se separó el pipeline en dos jobs:
+- `test` — corre `mvn test` con los 25 tests (unitarios + integración)
+- `deploy` — solo corre si `test` pasa, usando `needs: test`
+
+**Resultado:** Si cualquier test falla, el deploy se cancela automáticamente.
